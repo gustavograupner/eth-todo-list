@@ -1,4 +1,5 @@
 App = {
+  loading: false,
   contracts: {},
   load: async () => {
     await App.loadWeb3();
@@ -33,7 +34,50 @@ App = {
     }
   },
   render: async () => {
+    if (App.loading) {
+      return;
+    }
+    App.setLoading(true);
+
     $("#account").html(App.account);
+    await App.renderTasks();
+
+    App.setLoading(false);
+  },
+  renderTasks: async () => {
+    const taskCount = await App.todoList.taskCount();
+    const $taskTemplate = $(".taskTemplate");
+
+    for (let i = 1; i <= taskCount; i++) {
+      const task = await App.todoList.tasks(taskCount);
+
+      const $newTaskTemplate = $taskTemplate.clone();
+      $newTaskTemplate.find(".content").html(task.description);
+      $newTaskTemplate
+        .find("input")
+        .prop("name", task.id)
+        .prop("checked", task.complete);
+
+      if (task.complete) {
+        $("#completedTaskList").append($newTaskTemplate);
+      } else {
+        $("#taskList").append($newTaskTemplate);
+      }
+
+      $newTaskTemplate.show();
+    }
+  },
+  setLoading: (loading) => {
+    App.loading = loading;
+    const loader = $("#loader");
+    const content = $("#content");
+    if (loading) {
+      loader.show();
+      content.hide();
+    } else {
+      loader.hide();
+      content.show();
+    }
   },
 };
 
