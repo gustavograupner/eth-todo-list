@@ -21,4 +21,14 @@ contract("TodoList", (accounts) => {
     assert.equal(task.description, "Check if it works");
     assert.equal(task.complete, false);
   });
+
+  it("creates tasks", async () => {
+    const result = await this.todoList.createTask("A new task");
+    const taskCount = await this.todoList.taskCount();
+    const { args } = result.logs[0];
+    assert.equal(taskCount.toNumber(), 2);
+    assert.equal(args.id, 2);
+    assert.equal(args.description, "A new task");
+    assert.equal(args.complete, false);
+  });
 });

@@ -49,7 +49,7 @@ App = {
     const $taskTemplate = $(".taskTemplate");
 
     for (let i = 1; i <= taskCount; i++) {
-      const task = await App.todoList.tasks(taskCount);
+      const task = await App.todoList.tasks(i);
 
       const $newTaskTemplate = $taskTemplate.clone();
       $newTaskTemplate.find(".content").html(task.description);
@@ -65,6 +65,16 @@ App = {
       }
 
       $newTaskTemplate.show();
+    }
+  },
+  createTask: async () => {
+    App.setLoading(true);
+    const description = $("#newTask").val();
+    if (description) {
+      await App.todoList.createTask(description, {
+        from: App.account,
+      });
+      window.location.reload();
     }
   },
   setLoading: (loading) => {

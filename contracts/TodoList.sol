@@ -9,6 +9,8 @@ contract TodoList {
         bool complete;
     }
 
+    event TaskCreated(uint256 id, string description, bool complete);
+
     mapping(uint256 => Task) public tasks;
 
     constructor() public {
@@ -18,5 +20,6 @@ contract TodoList {
     function createTask(string memory _description) public {
         taskCount++;
         tasks[taskCount] = Task(taskCount, _description, false);
+        emit TaskCreated(taskCount, _description, false);
     }
 }
